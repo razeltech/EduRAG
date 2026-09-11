@@ -1,0 +1,55 @@
+server:
+  host: 0.0.0.0
+  port: 4747
+llm:
+  provider: ollama
+  # Active chat model (Ollama tag). Switch from Settings or: python -m app set-model gpt-oss:20b
+  model: qwen2.5:7b-instruct
+  path: ollama://qwen2.5:7b-instruct
+  base_url: http://localhost:11434
+  num_ctx: 4096
+  num_predict: 2048
+  temperature: 0.3
+  keep_alive: 5m
+  models:
+    - id: qwen2.5:7b-instruct
+      label: Qwen 2.5 7B Instruct
+      ollama_name: qwen2.5:7b-instruct
+      num_ctx: 4096
+      num_predict: 2048
+      temperature: 0.3
+      keep_alive: 5m
+      num_thread: 4
+      num_batch: 256
+      notes: Default. Fits RTX 3060 12GB VRAM.
+    - id: gpt-oss:20b
+      label: GPT-OSS 20B (OpenAI)
+      ollama_name: gpt-oss:20b
+      num_ctx: 2048
+      num_predict: 1536
+      temperature: 0.3
+      keep_alive: 2m
+      num_thread: 6
+      num_batch: 128
+      notes: ollama pull gpt-oss:20b — partial GPU offload on 12GB + system RAM.
+resources:
+  ollama_keep_alive: 5m
+  ollama_max_loaded_models: 1
+  ollama_num_parallel: 1
+  onnx_threads: 2
+  llm_threads: 4
+  llm_batch: 256
+  unload_llm_on_stop: true
+embedding:
+  model: all-MiniLM-L6-v2
+  path: models/embedding/all-MiniLM-L6-v2
+  device: cpu
+reranker:
+  enabled: false
+  device: cpu
+ocr:
+  engine: easyocr
+  path: models/ocr
+  enabled: true
+tts:
+  enabled: false

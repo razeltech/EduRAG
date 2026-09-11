@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EduRAG</title>
+  <link rel="stylesheet" href="/assets/styles.css" />
+</head>
+<body>
+  <div id="auth" class="gate">
+    <div class="gate-inner">
+      <p class="kicker">Local, this LAN, nothing leaves</p>
+      <h1>EduRAG</h1>
+      <p class="lede">Talk like a chat app. Attach Unity docs or class PDFs when you need them.</p>
+      <div class="seats" id="quickRow"></div>
+      <p class="err" id="authErr"></p>
+      <details class="more">
+        <summary>Use a different account</summary>
+        <form id="authForm">
+          <label class="reg-only">Name<input name="name" autocomplete="name" /></label>
+          <label>Email<input name="email" type="email" autocomplete="username" /></label>
+          <label>Password<input name="password" type="password" autocomplete="current-password" /></label>
+          <button type="submit" id="authSubmit">Sign in</button>
+        </form>
+        <p class="switch"><a href="#" id="authToggle">Need an account? Register</a></p>
+      </details>
+      <div id="quickLogins" hidden></div>
+    </div>
+  </div>
+
+  <div id="app" class="shell hidden">
+    <aside class="side" id="nav">
+      <div class="side-top">
+        <span class="brand">EduRAG</span>
+        <button type="button" class="guide-btn" data-guide="newchat" aria-label="What is New chat?"></button>
+        <button type="button" class="new-chat" id="newChat" title="New chat">＋ New</button>
+      </div>
+
+      <label class="side-label" for="courseSelect">Library <button type="button" class="guide-btn" data-guide="library" aria-label="What is a library?"></button></label>
+      <select id="courseSelect"></select>
+      <div class="side-actions staff-only">
+        <button type="button" id="newCourse" title="New library">＋ Library</button>
+        <button type="button" class="guide-btn" data-guide="newlib" aria-label="What is New library?"></button>
+        <button type="button" id="deleteCourse" title="Delete library">✕ Delete</button>
+        <button type="button" class="guide-btn" data-guide="dellib" aria-label="What is Delete library?"></button>
+        <label class="file-btn" title="Upload a file">↑ Upload<input type="file" id="fileInput" hidden /></label>
+        <button type="button" class="guide-btn" data-guide="upload" aria-label="What is Upload?"></button>
+        <button type="button" id="browseFolder" title="Index a folder">📁 Folder</button>
+        <button type="button" class="guide-btn" data-guide="folder" aria-label="What is Folder?"></button>
+      </div>
+      <label class="side-label k12-row staff-only" id="k12Label">
+        <input type="checkbox" id="k12Toggle" /> K-12 (school tone)
+        <button type="button" class="guide-btn" data-guide="k12" aria-label="What is K-12?"></button>
+      </label>
+      <div id="courseList" hidden></div>
+
+      <p class="side-label">Chats <button type="button" class="guide-btn" data-guide="chats" aria-label="What are chats?"></button></p>
+      <ul class="chats" id="convoList"></ul>
+
+      <details class="side-more">
+        <summary>Files in this library <button type="button" class="guide-btn" data-guide="files" aria-label="What are files?"></button></summary>
+        <ul class="docs" id="docList"></ul>
+      </details>
+      <details class="side-more" id="topicBlock">
+        <summary>Topics &amp; progress <button type="button" class="guide-btn" data-guide="topics" aria-label="What is progress?"></button></summary>
+        <div id="progressList"></div>
+        <div id="classProgress"></div>
+      </details>
+      <details class="side-more staff-only" id="escBlock">
+        <summary>Staff flags <button type="button" class="guide-btn" data-guide="flags" aria-label="What are staff flags?"></button></summary>
+        <ul class="flags" id="escList"></ul>
+      </details>
+      <details class="side-more admin-only" id="auditBlock">
+        <summary>Audit log <button type="button" class="guide-btn" data-guide="audit" aria-label="What is the audit log?"></button></summary>
+        <ul class="flags" id="auditList"></ul>
+      </details>
+
+      <div class="side-foot">
+        <span id="who"></span>
+        <button type="button" class="guide-btn" data-guide="who" aria-label="What is this account?"></button>
+        <button type="button" class="icon-btn" id="openChars" title="Characters">🎭</button>
+        <button type="button" class="guide-btn" data-guide="chars" aria-label="What are characters?"></button>
+        <button type="button" class="textish" id="logout">Sign out</button>
+      </div>
+    </aside>
+
+    <section class="main">
+      <header class="topbar">
+        <button type="button" class="icon-btn" id="toggleNav" aria-label="Toggle sidebar">☰</button>
+        <button type="button" class="guide-btn" data-guide="nav" aria-label="What is the sidebar?"></button>
+        <strong id="courseTitle">Chat</strong>
+        <select id="personaSelect" title="Character"></select>
+        <button type="button" class="guide-btn" data-guide="persona" aria-label="What is a character?"></button>
+        <nav id="personaBar" hidden></nav>
+        <button type="button" class="icon-btn" id="openChars2" title="Edit character">⚙</button>
+        <button type="button" class="guide-btn" data-guide="editchar" aria-label="What is character edit?"></button>
+        <label class="tiny"><input type="checkbox" id="debugToggle" /> Debug</label>
+        <button type="button" class="guide-btn" data-guide="debug" aria-label="What is Debug?"></button>
+        <label class="tiny" title="Ollama chat model">Model
+          <select id="llmModelSelect" class="tiny-select"></select>
+        </label>
+        <button type="button" class="textish" id="pullLlmModel" title="ollama pull selected">Pull</button>
+        <button type="button" class="textish" id="openGuide">Guide</button>
+      </header>
+
+      <div class="desk">
+        <div class="scroll" id="page">
+          <article class="paper">
+            <div id="empty" class="empty">
+              <p class="empty-kicker" id="personaHint">Chat</p>
+              <h2 id="emptyTitle">Talks with you, like a friend in the room</h2>
+              <p id="emptyBlurb">Talk normally. Attach a library when you want answers from your files.</p>
+              <button type="button" class="guide-btn" data-guide="empty" aria-label="What is this screen?"></button>
+            </div>
+            <div id="thread" class="thread"></div>
+            <div id="sourceList" hidden></div>
+            <div id="debugPanel" hidden>
+              <pre id="debugPre"></pre>
+            </div>
+          </article>
+        </div>
+
+        <div class="composer">
+          <button type="button" class="guide-btn composer-guide" data-guide="composer" aria-label="How do I send a message?"></button>
+          <textarea id="input" rows="1" placeholder="Message..."></textarea>
+          <button type="button" id="send" disabled title="Send">➤</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="picker" class="modal hidden" role="dialog" aria-label="Choose folder">
+    <div class="modal-card">
+      <header class="modal-bar">
+        <button type="button" id="pickerUp">Up</button>
+        <strong id="pickerPath">This PC</strong>
+        <button type="button" class="x" id="pickerClose" aria-label="Close">×</button>
+      </header>
+      <p class="modal-hint" id="pickerHint"></p>
+      <ul class="picker-list" id="pickerList"></ul>
+      <footer class="modal-foot">
+        <button type="button" id="pickerSelect">Use this folder</button>
+        <button type="button" class="guide-btn" data-guide="picker" aria-label="What is Use this folder?"></button>
+      </footer>
+    </div>
+  </div>
+
+  <div id="charModal" class="modal hidden" role="dialog" aria-label="Characters">
+    <div class="modal-card char-card">
+      <header class="modal-bar">
+        <strong>Characters</strong>
+        <button type="button" class="x" id="charClose" aria-label="Close">×</button>
+      </header>
+      <div class="char-body">
+        <p class="modal-hint">Build who you talk to. Built-ins can be edited; reset drops your override.</p>
+        <select id="charPick"></select>
+        <form id="charForm">
+          <input type="hidden" name="id" />
+          <label>Name <button type="button" class="guide-btn" data-guide="charname" aria-label="What is Name?"></button><input name="name" maxlength="80" required /></label>
+          <label>Tagline <button type="button" class="guide-btn" data-guide="tagline" aria-label="What is Tagline?"></button><input name="tagline" maxlength="160" /></label>
+          <label>How they talk <button type="button" class="guide-btn" data-guide="prompt" aria-label="What is How they talk?"></button><textarea name="system_prompt" rows="8" required></textarea></label>
+          <label class="inline"><input type="checkbox" name="uses_library" /> Pull from the library for how-to / API questions <button type="button" class="guide-btn" data-guide="useslib" aria-label="What is library pull?"></button></label>
+          <label>Temperature <span id="tempVal">0.75</span>
+            <button type="button" class="guide-btn" data-guide="temp" aria-label="What is temperature?"></button>
+            <input name="temperature" type="range" min="0.1" max="1.2" step="0.05" value="0.75" />
+          </label>
+          <fieldset class="filters">
+            <legend>Filters</legend>
+          <label class="inline"><input type="checkbox" name="f_pg" checked /> 16+ safeguard <button type="button" class="guide-btn" data-guide="fpg" aria-label="What is 16+?"></button></label>
+          <label class="inline"><input type="checkbox" name="f_no_emoji" /> No emoji spam <button type="button" class="guide-btn" data-guide="femoji" aria-label="What is No emoji?"></button></label>
+          <label class="inline"><input type="checkbox" name="f_stay_in_role" checked /> Stay in character <button type="button" class="guide-btn" data-guide="frole" aria-label="What is Stay in character?"></button></label>
+          <label class="inline"><input type="checkbox" name="f_dev_shop" /> Game-dev coworker energy <button type="button" class="guide-btn" data-guide="fdev" aria-label="What is coworker energy?"></button></label>
+          <label class="inline"><input type="checkbox" name="f_library_only_when_asked" checked /> Docs only when asked <button type="button" class="guide-btn" data-guide="fdocs" aria-label="What is Docs only when asked?"></button></label>
+          </fieldset>
+          <div class="char-actions">
+            <button type="button" id="charNew">New character</button>
+            <button type="button" class="guide-btn" data-guide="charnew" aria-label="What is New character?"></button>
+            <button type="submit" id="charSave">Save</button>
+            <button type="button" class="guide-btn" data-guide="charsave" aria-label="What is Save?"></button>
+            <button type="button" id="charReset">Reset override</button>
+            <button type="button" class="guide-btn" data-guide="charreset" aria-label="What is Reset?"></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="guidePop" class="guide-pop hidden" role="dialog" aria-label="Guide">
+    <button type="button" class="x" id="guidePopClose" aria-label="Close">×</button>
+    <strong id="guidePopTitle"></strong>
+    <p id="guidePopBody"></p>
+  </div>
+  <div id="guideModal" class="modal hidden" role="dialog" aria-label="Full guide">
+    <div class="modal-card">
+      <header class="modal-bar">
+        <strong>What everything does</strong>
+        <button type="button" class="x" id="guideModalClose" aria-label="Close">×</button>
+      </header>
+      <div id="guideList" class="guide-list"></div>
+    </div>
+  </div>
+  <div id="toast" class="toast"></div>
+  <script src="/assets/app.js"></script>
+</body>
+</html>

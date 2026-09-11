@@ -1,0 +1,21 @@
+PACKAGE CHECK
+=============
+  [OK] core files: 9 present
+  [OK] config.yaml: D:\AI_Tools\EduRAG\config.yaml
+  [OK] port: 4747
+  [OK] embedding: D:\AI_Tools\EduRAG\models\embedding\all-MiniLM-L6-v2
+  [OK] reranker: lexical fallback (no cross-encoder on disk)
+  [OK] ocr: D:\AI_Tools\EduRAG\models\ocr
+  [OK] llm: qwen2.5:7b-instruct
+  [OK] database: 15 tables
+  [OK] personas: 8 loaded, default=chat
+  [WARN] No cross-encoder in models/reranker/. Lexical rerank is on; add ms-marco-MiniLM-L-6-v2 later for better ranking.
+
+Ready to copy to a second institution PC.
+
+Copy notes:
+  - Copy the whole EduRAG folder (app, web, models, Start/Stop/Setup bats).
+  - Or run python -m app pack-client --zip and send prod-deliverables/EduRAG-client.zip.
+  - On the new PC run Setup-EduRAG.bat once, then Start-EduRAG.bat. Stop with Stop-EduRAG.bat.
+  - Keep port 4747. Do not bind 8080 or 3636. Firewall: inbound TCP 4747, Private profile only.
+  - Nothing leaves the LAN. Do not point config at a cloud API.

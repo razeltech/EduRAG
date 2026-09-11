@@ -1,0 +1,78 @@
+server:
+  host: 0.0.0.0
+  port: 4747
+hardware:
+  gpu: NVIDIA GeForce RTX 3060
+  vram_gb: 12.0
+  ram_gb: 31.9
+llm:
+  provider: ollama
+  model: qwen2.5:7b-instruct
+  path: ollama://qwen2.5:7b-instruct
+  base_url: http://localhost:11434
+  num_ctx: 4096
+  num_predict: 2048
+  temperature: 0.3
+  keep_alive: 5m
+  models:
+  - id: qwen2.5:7b-instruct
+    label: Qwen 2.5 7B Instruct
+    ollama_name: qwen2.5:7b-instruct
+    num_ctx: 4096
+    num_predict: 2048
+    temperature: 0.3
+    keep_alive: 5m
+    num_thread: 4
+    num_batch: 256
+    notes: Default. Fits RTX 3060 12GB VRAM.
+  - id: gpt-oss:20b
+    label: GPT-OSS 20B (OpenAI) — not recommended on 12GB
+    ollama_name: gpt-oss:20b
+    num_ctx: 2048
+    num_predict: 1536
+    temperature: 0.3
+    keep_alive: 2m
+    num_thread: 6
+    num_batch: 128
+    notes: Optional only. Bad fit for RTX 3060 12GB — slow RAM offload. Stay on Qwen for daily use.
+resources:
+  ollama_keep_alive: 5m
+  ollama_max_loaded_models: 1
+  ollama_num_parallel: 1
+  onnx_threads: 2
+  llm_threads: 4
+  llm_batch: 256
+  unload_llm_on_stop: true
+embedding:
+  model: all-MiniLM-L6-v2
+  path: D:\AI_Tools\EduRAG\models\embedding\all-MiniLM-L6-v2
+  device: cpu
+reranker:
+  model: null
+  path: null
+  device: cpu
+  enabled: false
+ocr:
+  engine: easyocr
+  path: D:\AI_Tools\EduRAG\models\ocr
+  enabled: true
+tts:
+  engine: piper
+  path: D:\ReactApps2Git\smilai\backend\models\hf_cache\piper
+  enabled: false
+degraded_modes:
+  reranker: true
+  ocr: false
+  embedding: false
+discovery:
+  recommendations:
+  - Using all-MiniLM-L6-v2 for embeddings. Fine to start; BAAI/bge-small-en-v1.5 is
+    a quality upgrade (~130 MB) if you add it later.
+  - 'Reranker missing — retrieval will run without reranking until one is added. System
+    is still usable in degraded mode. Suggested: cross-encoder/ms-marco-MiniLM-L-6-v2
+    (~80 MB).'
+  - EasyOCR English + Devanagari recognition weights are in models/ocr.
+  - Piper TTS voice found at D:\ReactApps2Git\smilai\backend\models\hf_cache\piper.
+    Not required for Phase 0–8; kept for later voice.
+auth:
+  jwt_secret: ba91d550c8418dbe386896979995743946a25e84e5ab48700ba02fad4f86298e

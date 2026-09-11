@@ -1,0 +1,32 @@
+# Python & Virtual Environments
+.venv/
+runtime/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+tests/e2e/artifacts/
+
+# Database & Runtime Data
+data/
+uploads/
+*.db
+*.sqlite3
+
+# Environment Variables
+.env
+.env.local
+
+# Build Deliverables & Releases
+EduRAG-Release/
+build_cache/
+dist/
+build/
+*.spec
+*.zip
+prod-deliverables/*.zip
+
+# Large Models (Models are auto-downloaded by Ollama / FastEmbed)
+models/
