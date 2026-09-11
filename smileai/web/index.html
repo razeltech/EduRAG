@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmileAI — Institutional Virtual Teacher & Learning Platform</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+  <!-- ==============================================================================
+       1. 60px Firm Branding Header
+       ============================================================================== -->
+  <header class="header-top">
+    <div class="brand-section">
+      <div class="brand-logo">S</div>
+      <div>
+        <div class="brand-title">SmileAI Platform</div>
+        <div class="brand-subtitle">Powered by Razel Tech &bull; 100% Air-Gapped Lab</div>
+      </div>
+    </div>
+
+    <div class="header-controls">
+      <!-- Stream Taxonomy Selector -->
+      <div class="stream-select-wrapper">
+        <span class="stream-label">Stream:</span>
+        <select id="globalStreamSelect" class="stream-select">
+          <option value="K10">Class 1st–10th (CBSE / State)</option>
+          <option value="MPC" selected>11th–12th Intermediate MPC (JEE)</option>
+          <option value="BIPC">11th–12th Intermediate BiPC (NEET)</option>
+          <option value="CEC">11th–12th Intermediate CEC / MEC</option>
+          <option value="HEC">11th–12th Intermediate HEC</option>
+          <option value="MBBS">Medical MBBS & BDS (Pathology / Anatomy)</option>
+          <option value="LAW">Legal Studies & Judiciary (LLB / CLAT)</option>
+          <option value="BTECH">Engineering B.Tech / BE (CSE & AI)</option>
+          <option value="MASTERS">Postgraduate & Masters</option>
+        </select>
+      </div>
+
+      <!-- Voice Selector -->
+      <div class="stream-select-wrapper">
+        <span class="stream-label">Voice:</span>
+        <select id="globalVoiceSelect" class="stream-select">
+          <option value="en-IN-NeerjaExpressiveNeural" selected>Aarti (Smiley Warm Voice)</option>
+          <option value="te-IN-ShrutiNeural">Shruti (Telugu Teacher)</option>
+          <option value="hi-IN-SwaraNeural">Swara (Hindi Teacher)</option>
+          <option value="en-IN-PrabhatNeural">Prabhat (Male Instructor)</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==============================================================================
+       2. Institutional Navigation Bar
+       ============================================================================== -->
+  <nav class="nav-bar">
+    <button class="nav-tab active" data-tab="studentTab">
+      <span>🎓</span> Student Workspace
+    </button>
+    <button class="nav-tab" data-tab="vocabTab">
+      <span>📚</span> Vocabulary &amp; Terms
+      <span class="nav-badge">Practice</span>
+    </button>
+    <button class="nav-tab" data-tab="builderTab">
+      <span>🔬</span> AI Builder Lab
+      <span class="nav-badge">NEP 2020</span>
+    </button>
+    <button class="nav-tab" data-tab="teacherTab">
+      <span>👩‍🏫</span> Teacher Portal
+    </button>
+    <button class="nav-tab" data-tab="adminTab">
+      <span>🏛️</span> Admin &amp; Lab Hub
+    </button>
+  </nav>
+
+  <!-- ==============================================================================
+       3. Main Workspaces Container
+       ============================================================================== -->
+  <main class="main-container">
+
+    <!-- ==========================================
+         TAB 1: Student Workspace
+         ========================================== -->
+    <div id="studentTab" class="tab-pane active">
+      <div class="student-grid">
+        
+        <!-- Left: Chat with Smiley -->
+        <div class="edu-card" style="padding: 0; overflow: hidden;">
+          <div class="chat-box">
+            <div class="card-header" style="padding: 14px 20px; margin: 0; background: var(--bg-surface);">
+              <div class="card-title">
+                <span>💬</span> Chat with Smiley
+                <span id="chatStreamBadge" class="nav-badge" style="margin-left: 8px;">MPC Stream</span>
+              </div>
+              <button id="clearChatBtn" class="btn-secondary" style="padding: 4px 10px; font-size: 11px;">Clear</button>
+            </div>
+
+            <div id="chatMessages" class="chat-messages">
+              <div class="chat-bubble assistant">
+                <strong>Namaste! I am Smiley, your learning companion.</strong><br>
+                Ask me any question from your syllabus, or drop an exam paper photo on the right to get a complete step-by-step solution!
+              </div>
+            </div>
+
+            <!-- Audio Waveform Bar -->
+            <div class="audio-player-bar">
+              <div class="voice-status">
+                <span id="voiceSpeakingLabel">Smiley Voice Ready</span>
+                <div class="waveform">
+                  <div class="wave-bar"></div>
+                  <div class="wave-bar"></div>
+                  <div class="wave-bar"></div>
+                  <div class="wave-bar"></div>
+                  <div class="wave-bar"></div>
+                </div>
+              </div>
+              <div style="margin-left: auto; display: flex; gap: 8px;">
+                <button id="replayVoiceBtn" class="btn-secondary" style="padding: 4px 10px; font-size: 11px;">🔊 Replay Voice</button>
+              </div>
+            </div>
+
+            <!-- Input Bar -->
+            <div class="chat-input-bar">
+              <input type="text" id="chatInput" class="chat-input" placeholder="Ask a question (e.g. Derive Newton's second law)...">
+              <button id="micBtn" class="btn-secondary" title="Speech to Text">🎤</button>
+              <button id="sendChatBtn" class="btn-primary">Ask Smiley</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Snap & Solve Exam Paper Dropzone -->
+        <div>
+          <div class="edu-card">
+            <div class="card-header">
+              <div class="card-title">
+                <span>📷</span> Snap &amp; Solve Exam Paper
+              </div>
+            </div>
+            
+            <div id="dropzone" class="dropzone-container">
+              <div class="dropzone-icon">📸</div>
+              <div class="dropzone-text">Drop Exam Paper Photo / Scan Here</div>
+              <div class="dropzone-sub">Supports PNG, JPG, WEBP, PDF &bull; Camera Uploads</div>
+              <input type="file" id="fileInput" accept="image/*,.pdf" style="display: none;">
+            </div>
+
+            <div id="solverStatus" style="display: none; font-size: 13px; color: var(--primary-blue); font-weight: 600; margin-bottom: 10px;">
+              Analyzing photo, extracting equations, and checking syllabus...
+            </div>
+
+            <div id="solutionBox" class="solution-box" style="display: none;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <span id="solutionConcept" style="font-family: var(--font-heading); font-size: 15px; font-weight: 800; color: var(--primary-navy);"></span>
+                <span id="solutionCitation" class="nav-badge">NCERT Syllabus</span>
+              </div>
+              
+              <div id="solutionSteps"></div>
+              
+              <div id="teacherTipBox" class="teacher-tip"></div>
+              
+              <div style="margin-top: 14px; text-align: right;">
+                <button id="listenSolutionBtn" class="btn-primary" style="padding: 6px 14px; font-size: 12px;">🔊 Listen with Aarti</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==========================================
+         TAB 2: Vocabulary & Terminology Practice
+         ========================================== -->
+    <div id="vocabTab" class="tab-pane">
+      <div class="vocab-grid">
+        
+        <!-- Left: Multiple Choice Definition Challenge -->
+        <div class="vocab-card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🎯</span> Stream Technical Challenge
+            </div>
+            <button id="nextVocabBtn" class="btn-secondary" style="padding: 4px 10px; font-size: 12px;">Next Word &rarr;</button>
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Definition:</div>
+            <div id="vocabDefinitionText" style="font-size: 15px; font-weight: 600; color: var(--text-primary); margin-top: 4px; line-height: 1.5;"></div>
+          </div>
+
+          <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Select Matching Term:</div>
+          <div id="vocabOptionsContainer" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
+
+          <div id="vocabResultBox" style="margin-top: 16px; display: none;"></div>
+        </div>
+
+        <!-- Right: Sentence Usage Evaluator -->
+        <div class="vocab-card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>✍️</span> Sentence Usage &amp; Performance Grader
+            </div>
+            <span id="vocabScoreBadge" class="score-badge-large">0 / 10 pts</span>
+          </div>
+
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+            Write a sentence using the target term <strong id="targetWordDisplay" style="color: var(--primary-navy);"></strong> to demonstrate your understanding.
+          </p>
+
+          <textarea id="sentenceInput" rows="3" class="chat-input" style="width: 100%; resize: vertical;" placeholder="Type your sentence here..."></textarea>
+
+          <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 11px; color: var(--text-muted);">Real-time semantic scoring out of 10</span>
+            <button id="evaluateSentenceBtn" class="btn-primary">Evaluate Sentence</button>
+          </div>
+
+          <div id="sentenceFeedbackBox" class="score-feedback-callout" style="display: none;"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==========================================
+         TAB 3: AI Builder Lab
+         ========================================== -->
+    <div id="builderTab" class="tab-pane">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        
+        <!-- Left: Tokenizer & Vector Explorer -->
+        <div>
+          <!-- Module 1: Tokenizer -->
+          <div class="edu-card">
+            <div class="card-header">
+              <div class="card-title">
+                <span>🔡</span> Module 1: Interactive Tokenizer
+              </div>
+              <span id="tokenCountBadge" class="nav-badge">0 Tokens</span>
+            </div>
+            <p style="font-size: 13px; color: var(--text-secondary);">
+              Type any sentence to see how AI cuts language into mathematical token IDs.
+            </p>
+            <input type="text" id="tokenizerInput" class="chat-input" style="width: 100%; margin-top: 8px;" value="Namaste India! AI uses numbers to think.">
+            <div id="tokensChipsBox" class="tokens-display-box"></div>
+          </div>
+
+          <!-- Module 2: Vector Space -->
+          <div class="edu-card">
+            <div class="card-header">
+              <div class="card-title">
+                <span>🧭</span> Module 2: 2D Vector Space &amp; Cosine Distance
+              </div>
+            </div>
+            <p style="font-size: 13px; color: var(--text-secondary);">
+              Watch words with similar meaning cluster close together in geometric space.
+            </p>
+            <div id="vectorCanvas" class="vector-map-canvas"></div>
+          </div>
+        </div>
+
+        <!-- Right: Build Your Custom Mini-Bot -->
+        <div class="edu-card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🤖</span> Module 3: Build &amp; Export Your AI Bot
+            </div>
+            <span id="rubricScoreBadge" class="score-badge-large">Rubric Score</span>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 12px; font-weight: 700; color: var(--text-secondary);">Bot Name:</label>
+            <input type="text" id="botNameInput" class="chat-input" style="width: 100%; margin-top: 4px;" value="Physics_Formula_Bot">
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 12px; font-weight: 700; color: var(--text-secondary);">Author / Student Name:</label>
+            <input type="text" id="botAuthorInput" class="chat-input" style="width: 100%; margin-top: 4px;" value="Class 11 MPC Student">
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <label style="font-size: 12px; font-weight: 700; color: var(--text-secondary);">Paste Your Syllabus Notes (Knowledge Source):</label>
+            <textarea id="botNotesInput" rows="4" class="chat-input" style="width: 100%; margin-top: 4px;" placeholder="Paste 1-2 paragraphs of facts, formulas, or definitions..."></textarea>
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <label style="font-size: 12px; font-weight: 700; color: var(--text-secondary);">Persona &amp; Guardrail Prompt:</label>
+            <input type="text" id="botPromptInput" class="chat-input" style="width: 100%; margin-top: 4px;" value="You are a gentle tutor. If an answer is not in notes, say: I cannot find that in my notes.">
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button id="evaluateBotBtn" class="btn-secondary" style="flex: 1;">Assess with CBSE/NEP Rubric</button>
+            <button id="exportBotBtn" class="btn-primary" style="flex: 1;">📥 Download My AI (.py)</button>
+          </div>
+
+          <div id="botRubricResults" class="score-feedback-callout" style="display: none; margin-top: 16px;"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==========================================
+         TAB 4: Teacher Portal
+         ========================================== -->
+    <div id="teacherTab" class="tab-pane">
+      <div class="edu-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>📚</span> Course Syllabus &amp; Document Ingestion Manager
+          </div>
+          <button class="btn-primary" onclick="alert('Upload syllabus textbooks (PDF, DOCX) to automatically index into the local vector store.')">+ Ingest New Textbook</button>
+        </div>
+        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 16px;">
+          Ingested textbooks are processed 100% locally. Text is chunked, embedded, and indexed for exact citation retrieval.
+        </p>
+
+        <div class="edu-table-wrapper">
+          <table class="edu-table">
+            <thead>
+              <tr>
+                <th>Document Title</th>
+                <th>Stream / Class</th>
+                <th>Status</th>
+                <th>Indexed Chunks</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>NCERT Physics Class 11 (Part 1).pdf</strong></td>
+                <td><span class="nav-badge">MPC / JEE</span></td>
+                <td><span style="color: var(--emerald-success); font-weight: 700;">Ready (100%)</span></td>
+                <td>342 Chunks</td>
+                <td><button class="btn-secondary" style="padding: 2px 8px; font-size: 11px;">View Chunks</button></td>
+              </tr>
+              <tr>
+                <td><strong>NCERT Biology Class 12 (Genetics).pdf</strong></td>
+                <td><span class="nav-badge">BiPC / NEET</span></td>
+                <td><span style="color: var(--emerald-success); font-weight: 700;">Ready (100%)</span></td>
+                <td>288 Chunks</td>
+                <td><button class="btn-secondary" style="padding: 2px 8px; font-size: 11px;">View Chunks</button></td>
+              </tr>
+              <tr>
+                <td><strong>Constitutional Law of India (Bare Act).pdf</strong></td>
+                <td><span class="nav-badge">Law / LLB</span></td>
+                <td><span style="color: var(--emerald-success); font-weight: 700;">Ready (100%)</span></td>
+                <td>410 Chunks</td>
+                <td><button class="btn-secondary" style="padding: 2px 8px; font-size: 11px;">View Chunks</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         TAB 5: Admin & Lab Hub
+         ========================================== -->
+    <div id="adminTab" class="tab-pane">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        
+        <!-- Institutional Bulk CSV Roster Importer -->
+        <div class="edu-card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📋</span> Bulk Student Roster Import (CSV)
+            </div>
+          </div>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+            Upload your school or college class list. The system auto-assigns batches and generates secure 4-digit PINs for instant lab logins.
+          </p>
+
+          <input type="file" id="rosterFileInput" accept=".csv" class="chat-input" style="width: 100%; margin-bottom: 12px;">
+          
+          <button id="uploadRosterBtn" class="btn-primary" style="width: 100%;">Import Roster &amp; Generate PIN Logins</button>
+          
+          <div id="rosterResultBox" style="margin-top: 14px; font-size: 13px; display: none;"></div>
+        </div>
+
+        <!-- ERP Gradebook Export -->
+        <div class="edu-card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📊</span> School ERP Gradebook Sync &amp; Export
+            </div>
+          </div>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+            Export student test attempts, vocabulary scores, and mastery percentages into standard CSV format compatible with school management software.
+          </p>
+
+          <a href="/api/smileai/gradebook/export?institution_id=inst_default" download="gradebook_export.csv" class="btn-primary" style="text-decoration: none; display: inline-flex; justify-content: center; width: 100%;">
+            📥 Export Gradebook to CSV
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
